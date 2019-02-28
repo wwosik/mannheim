@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Mannheim.DataProtection;
 using Mannheim.Salesforce.Authentication;
 using Mannheim.Salesforce.ConnectionManagement;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Mannheim.Salesforce.DataProtection
 {
@@ -20,34 +20,20 @@ namespace Mannheim.Salesforce.DataProtection
             this.fileStore = new DataProtectedFileStore(dataProtectionProvider, options.Value, logger);
         }
 
-        public Task<SalesforceOAuthConfiguration> GetSalesforceOAuthConfigurationAsync()
+        public Task<SalesforceOAuthConfiguration> GetSalesforceOAuthConfigurationAsync(string name = "__default")
         {
-            return this.fileStore.LoadJsonAsync<SalesforceOAuthConfiguration>("__SalesforceOAuthConfiguration");
+            return this.fileStore.LoadJsonAsync<SalesforceOAuthConfiguration>("__SalesforceOAuthConfiguration_" + name);
         }
 
-        public Task SaveSalesforceOAuthConfigurationAsync(SalesforceOAuthConfiguration value)
+        public Task SaveSalesforceOAuthConfigurationAsync(SalesforceOAuthConfiguration value, string name = "__default")
         {
-            return this.fileStore.SaveJsonAsync("__SalesforceOAuthConfiguration", value);
+            return this.fileStore.SaveJsonAsync("__SalesforceOAuthConfiguration_" + name, value);
         }
 
-        public Task<SalesforceOAuthToken> GetSalesforceTokenAsync(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                name = "__default";
-            }
+        public Task<SalesforceOAuthToken> GetSalesforceTokenAsync(string name = "__default")
+            => this.fileStore.LoadJsonAsync<SalesforceOAuthToken>(name);
 
-            return this.fileStore.LoadJsonAsync<SalesforceOAuthToken>(name);
-        }
-
-        public Task SaveSalesforceTokenAsync(SalesforceOAuthToken value, string name = null)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                name = "__default";
-            }
-
-            return this.fileStore.SaveJsonAsync(name, value);
-        }
+        public Task SaveSalesforceTokenAsync(SalesforceOAuthToken value, string name = "__default")
+          => this.fileStore.SaveJsonAsync(name, value);
     }
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Mannheim.Salesforce.Authentication;
 using Mannheim.Salesforce.Client;
+using Microsoft.Extensions.Logging;
 
 namespace Mannheim.Salesforce.ConnectionManagement
 {
@@ -13,6 +13,7 @@ namespace Mannheim.Salesforce.ConnectionManagement
     {
         private readonly IHttpClientFactory httpClientFactory;
         private readonly ILoggerFactory loggerFactory;
+        private readonly ILogger logger;
 
         public ISalesforceConfigStore ConfigStore { get; }
 
@@ -21,6 +22,7 @@ namespace Mannheim.Salesforce.ConnectionManagement
             this.httpClientFactory = httpClientFactory;
             this.ConfigStore = configStore;
             this.loggerFactory = loggerFactory;
+            this.logger = this.loggerFactory.CreateLogger(this.GetType().Name);
         }
 
         public Task<SalesforceClient> GetClientAsync(string name = "__default", bool cache = true)
@@ -39,13 +41,20 @@ namespace Mannheim.Salesforce.ConnectionManagement
         {
             var oauthConfig = await this.ConfigStore.GetSalesforceOAuthConfigurationAsync();
             var savedToken = await this.ConfigStore.GetSalesforceTokenAsync(name);
-            var logger = this.loggerFactory.CreateLogger<SalesforceAuthenticationClient>();
+            var authLogger = this.loggerFactory.CreateLogger<SalesforceAuthenticationClient>();
             using (var authClient = await this.CreateSalesforceAuthenticationClientAsync(new Uri(savedToken.InstanceUrl)))
             {
+                this.logger.LogDebug($"Authenticating {name}...");
                 var newToken = await authClient.ExchangeRefreshTokenForTokenAsync(savedToken.RefreshToken);
+                this.logger.LogDebug($"Authenticated {newToken.IdTokenUserInfo?.Name}...");
 
-                var client = new SalesforceClient(this.httpClientFactory.CreateClient(), newToken, logger);
-                this.clientCache[name] = client;
+                var clientLogger = this.loggerFactory.CreateLogger($"SalesforceClient [{name}]");
+                var client = new SalesforceClient(this.httpClientFactory.CreateClient(), newToken, authLogger);
+                if (cache)
+                {
+                    this.logger.LogInformation($"Added client {name} to cache");
+                    this.clientCache[name] = client;
+                }
                 return client;
             }
         }

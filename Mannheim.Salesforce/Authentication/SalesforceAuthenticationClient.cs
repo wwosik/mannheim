@@ -16,6 +16,9 @@ namespace Mannheim.Salesforce.Authentication
         private readonly HttpClient httpClient;
         private readonly ILogger logger;
 
+        /// <summary>
+        /// Constructor for use with the dependency injection
+        /// </summary>
         public SalesforceAuthenticationClient(IHttpClientFactory httpClientFactory, IOptions<SalesforceAuthenticationClientOptions> options, ILogger<SalesforceAuthenticationClient> logger)
         {
             this.httpClient = httpClientFactory.CreateClient();
@@ -24,6 +27,9 @@ namespace Mannheim.Salesforce.Authentication
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Constructor when manually creating an instance
+        /// </summary>
         public SalesforceAuthenticationClient(HttpClient httpClient, SalesforceAuthenticationClientOptions options, ILogger logger)
         {
             this.httpClient = httpClient;
