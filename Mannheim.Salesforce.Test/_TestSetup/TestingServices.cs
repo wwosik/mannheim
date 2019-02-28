@@ -4,41 +4,69 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Mannheim.DataProtection;
 using Mannheim.Salesforce.Authentication;
 using Mannheim.Salesforce.Client;
 using Mannheim.Salesforce.ConnectionManagement;
 using Mannheim.Salesforce.DataProtection;
+using Mannheim.XUnit;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Mannheim.Salesforce
 {
-    public static class TestingServices
+    public class TestingServices : TestServicesBase
     {
-        private static readonly ServiceProvider servicesProvider;
         private static SalesforceClient cachedClient;
 
-        public static TestSalesforceSystemOptions SalesforceOptions { get; }
+        public TestSalesforceSystemOptions SalesforceOptions { get; }
 
-        static TestingServices()
+        public TestingServices(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
             var builder = new ConfigurationBuilder()
-                .AddUserSecrets<TestSalesforceSystemOptions>(false);
+               .AddUserSecrets<TestSalesforceSystemOptions>(false);
 
             var config = builder.Build();
-            SalesforceOptions = config.GetSection("Salesforce").Get<TestSalesforceSystemOptions>();
-
-            var services = new ServiceCollection();
-            services.AddHttpClient();
-
-            services.Configure<SalesforceAuthenticationClientOptions>(o =>
+            this.SalesforceOptions = config.GetSection("Salesforce").Get<TestSalesforceSystemOptions>();
+            if (this.SalesforceOptions == null)
             {
-                o.SalesforceOAuthConfig = SalesforceOptions.SalesforceOAuthConfig;
-                o.LoginSystemUri = SalesforceOptions.LoginSystemUri;
-            });
+                throw new InvalidOperationException("Please configure User Secrets");
+            }
+
+        }
+
+        public async Task<SalesforceClient> GetSalesforceClientFromUserSecretsAsync(bool cached = true)
+        {
+            if (cached && cachedClient != null)
+            {
+                return cachedClient;
+            }
+
+            var authClient = this.Build<SalesforceAuthenticationClient>();
+            var token = await authClient.ExchangeUserPasswordForTokenAsync(this.SalesforceOptions.Username, this.SalesforceOptions.Password, this.SalesforceOptions.ApiToken);
+
+            var client = new SalesforceClient(
+                this.GetRequiredService<IHttpClientFactory>().CreateClient(), token, this.GetRequiredService<ILogger<SalesforceClient>>());
+
+            if (cached)
+            {
+                cachedClient = client;
+            }
+
+            return client;
+        }
+
+        public override void ConfigureTestSpecificServices(IServiceCollection services)
+        {
+            services.Configure<SalesforceAuthenticationClientOptions>(o =>
+          {
+              o.SalesforceOAuthConfig = this.SalesforceOptions.SalesforceOAuthConfig;
+              o.LoginSystemUri = this.SalesforceOptions.LoginSystemUri;
+          });
 
             services.Configure<SalesforceConfigDataProtectedFileStoreOptions>(o =>
             {
@@ -49,39 +77,6 @@ namespace Mannheim.Salesforce
             services.AddDataProtection();
             services.AddSingleton<ISalesforceConfigStore, SalesforceConfigDataProtectedFileStore>();
             services.AddSingleton<SalesforceClientProvider>();
-
-            servicesProvider = services.BuildServiceProvider();
-        }
-
-        public static T GetService<T>()
-        {
-            return servicesProvider.GetRequiredService<T>();
-        }
-
-        public static T Build<T>()
-        {
-            return ActivatorUtilities.CreateInstance<T>(servicesProvider);
-        }
-
-        public static async Task<SalesforceClient> GetSalesforceClientFromUserSecretsAsync(bool cached = true)
-        {
-            if (cached && cachedClient != null)
-            {
-                return cachedClient;
-            }
-
-            var authClient = Build<SalesforceAuthenticationClient>();
-            var token = await authClient.ExchangeUserPasswordForTokenAsync(SalesforceOptions.Username, SalesforceOptions.Password, SalesforceOptions.ApiToken);
-
-            var client = new SalesforceClient(
-                GetService<IHttpClientFactory>().CreateClient(), token, GetService<ILogger<SalesforceClient>>());
-
-            if (cached)
-            {
-                cachedClient = client;
-            }
-
-            return client;
         }
     }
 }

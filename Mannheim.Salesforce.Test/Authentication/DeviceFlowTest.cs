@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Mannheim.Salesforce.ConnectionManagement;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -11,35 +12,38 @@ namespace Mannheim.Salesforce.Authentication
 {
     public class DeviceFlowTest
     {
-        private readonly ITestOutputHelper output;
+        private readonly TestingServices services;
+        private readonly ILogger<DeviceFlowTest> logger;
 
         public DeviceFlowTest(ITestOutputHelper output)
         {
-            this.output = output;
+            this.services = new TestingServices(output);
+            this.logger = this.services.GetRequiredService<ILogger<DeviceFlowTest>>();
         }
 
         [Fact]
         public async Task Start()
         {
-            var authClient = TestingServices.Build<SalesforceAuthenticationClient>();
+            var authClient = this.services.Build<SalesforceAuthenticationClient>();
             var token = await authClient.StartDeviceFlowAsync();
-            this.output.WriteLine(JsonConvert.SerializeObject(token));
+
+            this.logger.LogInformation(JsonConvert.SerializeObject(token));
         }
 
         [SkippableFact]
         public async Task Complete()
         {
-            var deviceCode = TestingServices.SalesforceOptions.DeviceCode;
+            var deviceCode = this.services.SalesforceOptions.DeviceCode;
             Skip.If(string.IsNullOrEmpty(deviceCode), "Skipping because DeviceCode is missing");
 
-            var authClient = TestingServices.Build<SalesforceAuthenticationClient>();
-            var provider = TestingServices.GetService<SalesforceClientProvider>();
+            var authClient = this.services.Build<SalesforceAuthenticationClient>();
+            var provider = this.services.GetRequiredService<SalesforceClientProvider>();
 
             var token = await authClient.ExchangeDeviceCodeForTokenAsync(deviceCode);
-            this.output.WriteLine(JsonConvert.SerializeObject(token));
+            this.logger.LogInformation(JsonConvert.SerializeObject(token));
 
             await provider.ConfigStore.SaveSalesforceTokenAsync(token);
-            await provider.ConfigStore.SaveSalesforceOAuthConfigurationAsync(TestingServices.SalesforceOptions.SalesforceOAuthConfig);
+            await provider.ConfigStore.SaveSalesforceOAuthConfigurationAsync(this.services.SalesforceOptions.SalesforceOAuthConfig);
 
         }
     }

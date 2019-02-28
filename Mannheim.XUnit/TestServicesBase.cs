@@ -13,7 +13,6 @@ namespace Mannheim.XUnit
             services.AddHttpClient();
             services.AddLogging(logging =>
             {
-
                 logging.SetMinimumLevel(LogLevel.Trace);
 
                 logging.ClearProviders();
@@ -34,6 +33,11 @@ namespace Mannheim.XUnit
             loggingBuilder.AddFilter("Microsoft.AspNetCore.DataProtection",
                 level => (level >= LogLevel.Information)
                 );
+
+            loggingBuilder.AddFilter("System.Net.Http.HttpClient.Default",
+              LogLevel.Information
+              );
+
         }
 
         public T GetRequiredService<T>()

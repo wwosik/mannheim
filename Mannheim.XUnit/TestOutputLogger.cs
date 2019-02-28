@@ -17,7 +17,7 @@ namespace Mannheim.XUnit
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            throw new NotSupportedException();
+            return new TestOutputLoggerProviderScope(state);
         }
 
         public bool IsEnabled(LogLevel logLevel)

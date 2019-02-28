@@ -32,6 +32,11 @@ namespace Mannheim.Salesforce.Authentication
             this.logger = logger;
         }
 
+        public Task ExchangeUserPasswordForTokenAsync(string username, string password, object apiToken)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task<T> PostToTokenEndpoint<T>(Dictionary<string, string> payload, [CallerMemberName]string caller = null)
         {
             var tokenResponse = await this.httpClient.PostAsync(this.TokenEndpoint, new FormUrlEncodedContent(payload));

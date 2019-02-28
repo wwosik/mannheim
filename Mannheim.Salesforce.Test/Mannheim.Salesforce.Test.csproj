@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mannheim.Salesforce\Mannheim.Salesforce.csproj" />
+    <ProjectReference Include="..\Mannheim.XUnit\Mannheim.XUnit.csproj" />
   </ItemGroup>
 
 </Project>

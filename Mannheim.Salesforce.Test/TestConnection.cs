@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Mannheim.Salesforce.Authentication;
 using Mannheim.Salesforce.Client.RestApi.StandardDataObjects;
 using Mannheim.Salesforce.ConnectionManagement;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -13,31 +14,33 @@ namespace Mannheim.Salesforce
 {
     public class TestConnection
     {
-        private readonly ITestOutputHelper output;
+        private readonly TestingServices services;
+        private readonly ILogger<TestConnection> logger;
 
         public TestConnection(ITestOutputHelper output)
         {
-            this.output = output;
+            this.services = new TestingServices(output);
+            this.logger = this.services.GetRequiredService<ILogger<TestConnection>>();
         }
 
         [Fact]
         public async Task CanConnectWithUserPassword()
         {
-            var salesforceAuthClient = TestingServices.Build<SalesforceAuthenticationClient>();
-            var options = TestingServices.SalesforceOptions;
+            var salesforceAuthClient = this.services.Build<SalesforceAuthenticationClient>();
+            var options = this.services.SalesforceOptions;
             var token = await salesforceAuthClient.ExchangeUserPasswordForTokenAsync(options.Username, options.Password, options.ApiToken);
-            this.output.WriteLine(JsonConvert.SerializeObject(token));
+            this.logger.LogInformation(JsonConvert.SerializeObject(token));
         }
 
         [Fact]
         public async Task CanConnectFromStore()
         {
-            var clientProvider = TestingServices.GetService<SalesforceClientProvider>();
+            var clientProvider = this.services.GetRequiredService<SalesforceClientProvider>();
             var client = await clientProvider.GetClientAsync();
             var result = await client.QueryAnonymousTypeAndContinueAsync("SELECT count(id) UserCount FROM User", new { UserCount = 0 });
             Assert.NotEmpty(result);
             Assert.NotEqual(0, result[0].UserCount);
-            this.output.WriteLine(result[0].UserCount.ToString());
+            this.logger.LogInformation(result[0].UserCount.ToString());
         }
     }
 }
