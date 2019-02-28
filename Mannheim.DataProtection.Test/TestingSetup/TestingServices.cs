@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Mannheim.XUnit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Xunit.Abstractions;
 
 namespace Mannheim.DataProtection
 {
-    public class TestingServices
+    public class TestingServices : TestServicesBase
     {
-        private static readonly ServiceProvider servicesProvider;
-
-        static TestingServices()
+        public TestingServices(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
-            var services = new ServiceCollection();
-            services.AddLogging();
+        }
+
+        public override void ConfigureTestSpecificServices(IServiceCollection services)
+        {
             services.AddDataProtection();
 
             services.Configure<DataProtectedFileStoreOptions>(o =>
@@ -24,19 +26,7 @@ namespace Mannheim.DataProtection
                 o.ProtectorKey = "Mannheim.DataProtectedFileStore.Test";
             });
 
-            services.AddSingleton<DataProtectedFileStore>();
-
-            servicesProvider = services.BuildServiceProvider();
-        }
-
-        public static T GetService<T>()
-        {
-            return servicesProvider.GetRequiredService<T>();
-        }
-
-        public static T Build<T>()
-        {
-            return ActivatorUtilities.CreateInstance<T>(servicesProvider);
+            services.AddDataProtectedFileStore();
         }
     }
 }
