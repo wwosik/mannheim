@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mannheim.Google\Mannheim.Google.csproj" />
+    <ProjectReference Include="..\Mannheim.XUnit\Mannheim.XUnit.csproj" />
   </ItemGroup>
 
 </Project>

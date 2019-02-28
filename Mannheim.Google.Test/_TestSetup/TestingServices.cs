@@ -7,44 +7,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
+using Mannheim.XUnit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-namespace Mannheim.Google.TestSetup
+namespace Mannheim.Google
 {
-    public static class TestingServices
+    public class TestingServices : TestServicesBase
     {
-        private static readonly ServiceProvider servicesProvider;
-        //private static SalesforceClient cachedClient;
-
         public static GoogleTestOptions Options { get; }
-
-
-        private static readonly object lockObject = new object();
-        private static LoggerOutput loggerOutput;
-
-        internal static void SetLogger(ITestOutputHelper output)
-        {
-            if (loggerOutput != null)
-            {
-                loggerOutput.SetOutput(output);
-                return;
-            }
-
-            lock (lockObject)
-            {
-                if (loggerOutput == null)
-                {
-                    loggerOutput = new LoggerOutput(output);
-                    global::Google.ApplicationContext.RegisterLogger(new Logger(loggerOutput));
-                }
-                else
-                {
-                    loggerOutput.SetOutput(output);
-                }
-            }
-        }
 
         static TestingServices()
         {
@@ -53,24 +26,13 @@ namespace Mannheim.Google.TestSetup
 
             var config = builder.Build();
             Options = config.Get<GoogleTestOptions>();
-
-            var services = new ServiceCollection();
-            services.AddHttpClient();
-
-            servicesProvider = services.BuildServiceProvider();
         }
 
-        public static T GetService<T>()
+        public TestingServices(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
-            return servicesProvider.GetRequiredService<T>();
         }
 
-        public static T Build<T>()
-        {
-            return ActivatorUtilities.CreateInstance<T>(servicesProvider);
-        }
-
-        public static async Task<UserCredential> AuthorizeAsync()
+        public async Task<UserCredential> AuthorizeAsync()
         {
             var folder = new DirectoryInfo(Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -93,6 +55,13 @@ namespace Mannheim.Google.TestSetup
                 );
 
             return credential;
+        }
+
+        public override void ConfigureTestSpecificServices(IServiceCollection services)
+        {
+            var logger = services.BuildServiceProvider().GetRequiredService<ILogger<GoogleLogForwarder>>();
+            global::Google.ApplicationContext.RegisterLogger(new GoogleLogForwarder(logger));
+
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mannheim.Google.TestSetup
+namespace Mannheim.Google
 {
     public class GoogleTestOptions
     {

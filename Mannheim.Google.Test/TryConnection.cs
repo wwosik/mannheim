@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using global::Google.Apis.Services;
 using global::Google.Apis.Sheets.v4;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
@@ -13,18 +15,17 @@ namespace Mannheim.Google
 {
     public class TryConnection
     {
-        private readonly ITestOutputHelper output;
+        private readonly TestingServices services;
 
         public TryConnection(ITestOutputHelper output)
         {
-            this.output = output;
-            TestSetup.TestingServices.SetLogger(output);
+            this.services = new TestingServices(output);
         }
 
         [Fact]
-        public async Task EnumerateSheets()
+        public async Task FindASheet()
         {
-            var credential = await TestSetup.TestingServices.AuthorizeAsync();
+            var credential = await this.services.AuthorizeAsync();
 
             var drive = new global::Google.Apis.Drive.v3.DriveService(new BaseClientService.Initializer
             {
@@ -32,22 +33,12 @@ namespace Mannheim.Google
                 ApplicationName = "Mannheim.Google"
             });
 
+            var logger = this.services.GetRequiredService<ILogger<TryConnection>>();
             var request = await drive.Files.List().ExecuteAsync();
-            string fileId = null;
-            foreach (var file in request.Files)
-            {
-                if (file.MimeType == "application/vnd.google-apps.spreadsheet")
-                {
-                    this.output.WriteLine(file.Name);
-                    fileId = file.Id;
-                    break;
-                }
-            }
+            var file = request.Files.
+                First(f => f.MimeType == "application/vnd.google-apps.spreadsheet");
 
-            if (fileId == null)
-            {
-                throw new Exception();
-            }
+            logger.LogInformation($"{file.Id} {file.Name}");
 
             var sheetService = new global::Google.Apis.Sheets.v4.SheetsService(new BaseClientService.Initializer
             {
@@ -55,7 +46,8 @@ namespace Mannheim.Google
                 ApplicationName = "Mannheim.Google"
             });
 
-            var spreadsheetFile = await sheetService.Spreadsheets.Get(fileId).ExecuteAsync();
+            var spreadsheetFile = await sheetService.Spreadsheets.Get(file.Id).ExecuteAsync();
+            logger.LogInformation(JsonConvert.SerializeObject(spreadsheetFile));
         }
     }
 }
