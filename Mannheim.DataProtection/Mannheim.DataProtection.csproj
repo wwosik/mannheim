@@ -10,7 +10,7 @@
     <Copyright>Wojciech Wosik</Copyright>
     <PackageIconUrl />
     <RepositoryType>github</RepositoryType>
-    <RepositoryUrl>https://github.com/wwosik/Mannheim</RepositoryUrl>
+    <RepositoryUrl>https://github.com/wwosik/mannheim.git</RepositoryUrl>
     <PackageTags>aspnetcore</PackageTags>
     <PackageProjectUrl>https://github.com/wwosik/mannheim/blob/master/Mannheim.DataProtection/README.md</PackageProjectUrl>
     <Description>A simple protected file store using the DataProtection</Description>
