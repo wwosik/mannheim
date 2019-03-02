@@ -48,8 +48,21 @@ namespace Mannheim.Salesforce.Authentication
                     return null;
                 }
 
-                var serialized = Encoding.UTF8.GetString(Convert.FromBase64String(this.IdToken.Split('.')[1]));
-                return JsonConvert.DeserializeObject<SalesforceIdTokenUserInfo>(serialized);
+                try
+                {
+                    var split = this.IdToken.Split('.');
+                    if (split.Length < 2) return null;
+                    var encodedText = split[1];
+                    var necessaryPad = (3 - encodedText.Length % 3) % 3; // 0 => 0, 1 => 2, 2=>1 necessary because of Microsoft silly parser
+                    encodedText = encodedText.PadRight(encodedText.Length + necessaryPad, '=');
+                    var converted = Convert.FromBase64String(encodedText);
+                    var serialized = Encoding.ASCII.GetString(converted);
+                    return JsonConvert.DeserializeObject<SalesforceIdTokenUserInfo>(serialized);
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
     }

@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mannheim.DataProtection\Mannheim.DataProtection.csproj" />
+    <ProjectReference Include="..\Mannheim.Utils\Mannheim.Utils.csproj" />
   </ItemGroup>
 
 </Project>

@@ -25,14 +25,20 @@ namespace Mannheim.Salesforce.ConnectionManagement
             this.logger = this.loggerFactory.CreateLogger(this.GetType().Name);
         }
 
-        public Task<SalesforceClient> GetClientAsync(string name = "__default", bool cache = true)
+        /// <summary>
+        /// Provides a SalesforceClient that is already authenticated with Salesforce. If SalesforceClient already existed it is returned from the store.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="cache"></param>
+        /// <returns></returns>
+        public Task<SalesforceClient> GetClientAsync(string name = "__default")
         {
-            if (cache && this.clientCache.TryGetValue(name, out var cachedClient))
+            if (this.clientCache.TryGetValue(name, out var cachedClient))
             {
                 return Task.FromResult(cachedClient);
             }
 
-            return this.CreateClientAsync(name, cache);
+            return this.CreateClientAsync(name, true);
         }
 
         private readonly Dictionary<string, SalesforceClient> clientCache = new Dictionary<string, SalesforceClient>();

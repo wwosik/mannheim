@@ -7,16 +7,24 @@ using Newtonsoft.Json.Linq;
 
 namespace Mannheim.Salesforce.Client.RestApi
 {
-    public class SObject
+
+    public class ApiVersion
     {
-        public string Id { get; set; }
+        [JsonProperty("version")]
+        public string Version { get; set; }
+
+        [JsonProperty("label")]
+        public string Label { get; set; }
+
+        [JsonProperty("url")]
+        public string Url { get; set; }
 
         [JsonExtensionData]
         public IDictionary<string, JToken> AdditionalData { get; set; }
 
         public override string ToString()
         {
-            return $"{this.GetType().Name} {this.Id} {this.AdditionalData.AsString()}";
+            return $"{this.Version} ({this.Label}) {this.Url}" + this.AdditionalData.AsString();
         }
     }
 }

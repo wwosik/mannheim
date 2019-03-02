@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Mannheim.Salesforce
+namespace Mannheim.Utils
 {
     public static class HttpClientExtensions
     {

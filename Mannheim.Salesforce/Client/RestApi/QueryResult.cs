@@ -8,11 +8,11 @@ namespace Mannheim.Salesforce.Client.RestApi
 {
     public class QueryResult<T>
     {
+        [JsonProperty("done")]
+        public bool Done { get; set; }
+
         [JsonProperty("totalSize")]
         public int TotalSize { get; set; }
-
-        [JsonProperty("done")]
-        public bool IsDone { get; set; }
 
         [JsonProperty("records")]
         public List<T> Records { get; set; }
@@ -22,5 +22,11 @@ namespace Mannheim.Salesforce.Client.RestApi
 
         [JsonExtensionData]
         public IDictionary<string, JToken> AdditionalData { get; set; }
+
+        public override string ToString()
+        {
+            var rowCount = this.Records?.Count ?? 0;
+            return $"{rowCount} records of total {this.TotalSize} for {typeof(T).Name}. Done: {this.Done}";
+        }
     }
 }
