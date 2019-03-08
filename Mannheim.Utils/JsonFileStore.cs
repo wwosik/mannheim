@@ -43,6 +43,7 @@ namespace Mannheim.Utils
 
         public async Task SaveAsync<T>(string name, T obj, Formatting formatting)
         {
+            this.EnsureDirectory();
             var path = $"{this.baseDir.FullName}/{name}.json";
             this.logger.LogTrace($"Saving {typeof(T).Name} into {path}...");
             var serializedContent = JsonConvert.SerializeObject(obj, Formatting.Indented);

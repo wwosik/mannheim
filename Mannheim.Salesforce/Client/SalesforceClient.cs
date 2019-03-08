@@ -70,6 +70,14 @@ namespace Mannheim.Salesforce.Client
             return result;
         }
 
+        public async Task<QueryResult<T>> ToolingQueryAsync<T>(string queryText) where T : SObject
+        {
+            this.logger.LogTrace("Querying...");
+            var result = await this.HttpClient.GetJsonAsync<QueryResult<T>>($"{this.ApiVersion.Url}/tooling/query?q={Uri.EscapeUriString(queryText)}");
+            this.logger.LogTrace($"Got {result.Records.Count} of {result.TotalSize}.");
+            return result;
+        }
+
         public Task<QueryResult<T>> QueryNextAsync<T>(string nextRecordsUrl)
         {
             return this.HttpClient.GetJsonAsync<QueryResult<T>>(nextRecordsUrl);

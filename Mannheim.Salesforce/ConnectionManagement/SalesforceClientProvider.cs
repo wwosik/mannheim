@@ -71,12 +71,13 @@ namespace Mannheim.Salesforce.ConnectionManagement
             return oauthConfig.GetAuthenticationUrl(loginSystemUri, state);
         }
 
-        public async Task AddClientForToken(Uri loginSystemUri, string code, string name = null)
+        public async Task<SalesforceOAuthToken> AddClientForCodeAsync(Uri loginSystemUri, string code, string name = null)
         {
             using (var authClient = await this.CreateSalesforceAuthenticationClientAsync(loginSystemUri))
             {
                 var token = await authClient.ExchangeCodeForTokenAsync(code);
                 await this.ConfigStore.SaveSalesforceTokenAsync(token, name);
+                return token;
             }
         }
 

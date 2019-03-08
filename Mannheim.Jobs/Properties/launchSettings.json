@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Mannheim.Jobs": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\wosikw\\AppData\\Local\\Mannheim.Jobs.Test\\Simple"
+    }
+  }
+}

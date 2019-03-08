@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Conditions;
 using NLog.Config;
 using NLog.Extensions.Logging;
 using NLog.Targets;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace Mannheim.NLog.Utils
 {
@@ -18,7 +18,7 @@ namespace Mannheim.NLog.Utils
         /// Opinionated configuration of NLog
         /// </summary>
         /// <param name="appFolder"></param>
-        public static void ConfigureNLog(DirectoryInfo logFolder, string filePrefix = "")
+        public static void ConfigureNLog(DirectoryInfo logFolder, string filePrefix = "", FileNameFormat fileNameFormat = FileNameFormat.ShortDate)
         {
             if (!string.IsNullOrEmpty(filePrefix) && !filePrefix.EndsWith("-")) filePrefix += "-";
 
@@ -29,10 +29,21 @@ namespace Mannheim.NLog.Utils
             }
 
             var config = new LoggingConfiguration();
+            string filenameSuffix;
+            switch (fileNameFormat)
+            {
+                case FileNameFormat.Simple:
+                    filenameSuffix = "";
+                    break;
+                case FileNameFormat.ShortDate:
+                default:
+                    filenameSuffix = ".${{shortdate}}";
+                    break;
+            }
 
             var microsoftFileTarget = new FileTarget("microsoft")
             {
-                FileName = $@"{logFolder.FullName}/{filePrefix}microsoft.${{shortdate}}.log",
+                FileName = $@"{logFolder.FullName}/{filePrefix}microsoft{filenameSuffix}.log",
                 Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${logger} ${message} ${exception}"
             };
             config.AddTarget(microsoftFileTarget);
@@ -62,7 +73,7 @@ namespace Mannheim.NLog.Utils
 
             var fileTarget = new FileTarget("file")
             {
-                FileName = $@"{logFolder.FullName}/{filePrefix}general.${{shortdate}}.log",
+                FileName = $@"{logFolder.FullName}/{filePrefix}general{filenameSuffix}.log",
                 Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${logger:shortName=true} ${message} ${exception}"
             };
             config.AddTarget(fileTarget);
@@ -70,7 +81,7 @@ namespace Mannheim.NLog.Utils
 
             var errorFileTarget = new FileTarget("errorFileTarget")
             {
-                FileName = $@"{logFolder.FullName}/error.${{shortdate}}.log",
+                FileName = $@"{logFolder.FullName}/error{filenameSuffix}.log",
                 Layout = @"${date:format=HH\:mm\:ss} ${level:uppercase=true} ${logger:shortName=true} ${message} ${exception}"
             };
             config.AddTarget(errorFileTarget);
@@ -100,5 +111,12 @@ namespace Mannheim.NLog.Utils
                    l.AddNLog();
                });
         }
+
+    }
+
+    public enum FileNameFormat
+    {
+        Simple,
+        ShortDate,
     }
 }
