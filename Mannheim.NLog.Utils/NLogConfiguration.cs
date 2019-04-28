@@ -37,7 +37,7 @@ namespace Mannheim.NLog.Utils
                     break;
                 case FileNameFormat.ShortDate:
                 default:
-                    filenameSuffix = ".${{shortdate}}";
+                    filenameSuffix = ".${shortdate}";
                     break;
             }
 
