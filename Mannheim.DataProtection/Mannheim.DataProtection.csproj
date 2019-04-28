@@ -1,9 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <Version>1.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>Wojciech Wosik</Company>
+    <Authors>Wojciech Wosik</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Copyright>Wojciech Wosik</Copyright>
+    <PackageIconUrl />
+    <RepositoryType>github</RepositoryType>
+    <RepositoryUrl>https://github.com/wwosik/mannheim.git</RepositoryUrl>
+    <PackageTags>aspnetcore</PackageTags>
+    <PackageProjectUrl>https://github.com/wwosik/mannheim/blob/master/Mannheim.DataProtection/README.md</PackageProjectUrl>
+    <Description>A simple protected file store using the DataProtection</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +24,20 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\9.0.1\lib\netstandard1.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

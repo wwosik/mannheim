@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -6,8 +6,15 @@
     <Authors>wwosik</Authors>
     <Company>Wojciech Wosik</Company>
     <Product>Mannheim Salesforce access package</Product>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+
     <Copyright>Wojciech Wosik</Copyright>
     <Version>1.0.0</Version>
+    <Description>Utilities for accessing Salesforce in non-interactive scenarios.</Description>
+    <PackageTags>dotnetcore salesforce</PackageTags>
+    <RepositoryType>github</RepositoryType>
+    <RepositoryUrl>https://github.com/wwosik/mannheim.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/wwosik/mannheim/blob/master/Mannheim.Salesforce/README.md</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +28,19 @@
   <ItemGroup>
     <ProjectReference Include="..\Mannheim.DataProtection\Mannheim.DataProtection.csproj" />
     <ProjectReference Include="..\Mannheim.Utils\Mannheim.Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
