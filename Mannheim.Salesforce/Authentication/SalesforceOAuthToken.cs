@@ -1,42 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Authentication
 {
     public class SalesforceOAuthToken
     {
-        [JsonProperty("access_token")]
+        [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
 
-        [JsonProperty("signature")]
+        [JsonPropertyName("signature")]
         public string Signature { get; set; }
 
-        [JsonProperty("instance_url")]
+        [JsonPropertyName("instance_url")]
         public string InstanceUrl { get; set; }
 
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonProperty("id_token")]
+        [JsonPropertyName("id_token")]
         public string IdToken { get; set; }
 
-        [JsonProperty("token_type")]
+        [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
 
-        [JsonProperty("issued_at")]
+        [JsonPropertyName("issued_at")]
         public string IssuedAt { get; set; }
 
-        [JsonProperty("scope")]
+        [JsonPropertyName("scope")]
         public string Scope { get; set; }
 
-        [JsonProperty("refresh_token")]
+        [JsonPropertyName("refresh_token")]
         public string RefreshToken { get; set; }
 
         [JsonExtensionData]
-        public IDictionary<string, JToken> AdditionalData { get; set; }
+        public IDictionary<string, object> AdditionalData { get; set; }
 
         [JsonIgnore]
         public SalesforceIdTokenUserInfo IdTokenUserInfo
@@ -57,7 +57,7 @@ namespace Mannheim.Salesforce.Authentication
                     encodedText = encodedText.PadRight(encodedText.Length + necessaryPad, '=');
                     var converted = Convert.FromBase64String(encodedText);
                     var serialized = Encoding.ASCII.GetString(converted);
-                    return JsonConvert.DeserializeObject<SalesforceIdTokenUserInfo>(serialized);
+                    return JsonSerializer.Deserialize<SalesforceIdTokenUserInfo>(serialized);
                 }
                 catch
                 {

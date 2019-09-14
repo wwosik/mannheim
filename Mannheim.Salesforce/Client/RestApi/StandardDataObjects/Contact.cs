@@ -9,5 +9,8 @@ namespace Mannheim.Salesforce.Client.RestApi.StandardDataObjects
         public Account Account { get; set; }
         public string AccountId { get; set; }
 
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
     }
 }

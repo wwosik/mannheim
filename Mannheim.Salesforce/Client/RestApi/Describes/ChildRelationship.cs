@@ -1,31 +1,33 @@
-﻿using Newtonsoft.Json;
+﻿
+
+using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Client.RestApi.Describes
 {
     public partial class ChildRelationship
     {
-        [JsonProperty("cascadeDelete")]
+        [JsonPropertyName("cascadeDelete")]
         public bool CascadeDelete { get; set; }
 
-        [JsonProperty("childSObject")]
+        [JsonPropertyName("childSObject")]
         public string ChildSObject { get; set; }
 
-        [JsonProperty("deprecatedAndHidden")]
+        [JsonPropertyName("deprecatedAndHidden")]
         public bool DeprecatedAndHidden { get; set; }
 
-        [JsonProperty("field")]
+        [JsonPropertyName("field")]
         public string Field { get; set; }
 
-        [JsonProperty("junctionIdListNames")]
+        [JsonPropertyName("junctionIdListNames")]
         public string[] JunctionIdListNames { get; set; }
 
-        [JsonProperty("junctionReferenceTo")]
+        [JsonPropertyName("junctionReferenceTo")]
         public string[] JunctionReferenceTo { get; set; }
 
-        [JsonProperty("relationshipName")]
+        [JsonPropertyName("relationshipName")]
         public string RelationshipName { get; set; }
 
-        [JsonProperty("restrictedDelete")]
+        [JsonPropertyName("restrictedDelete")]
         public bool RestrictedDelete { get; set; }
     }
 }

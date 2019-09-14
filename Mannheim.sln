@@ -1,12 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29230.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.DataProtection", "Mannheim.DataProtection\Mannheim.DataProtection.csproj", "{F5431FB2-1A53-4368-A6FF-4B99EC9C8385}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.DataProtection.Test", "Mannheim.DataProtection.Test\Mannheim.DataProtection.Test.csproj", "{21D1D785-107E-4F92-844B-6FFC84CAE635}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.NLog.Utils", "Mannheim.NLog.Utils\Mannheim.NLog.Utils.csproj", "{1F8CA6E0-7678-45E8-8E95-580D12471AA0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.Salesforce", "Mannheim.Salesforce\Mannheim.Salesforce.csproj", "{6EC71473-DB70-4D6E-8AF4-803EBFBA706E}"
@@ -23,9 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.XUnit.Test", "Mann
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.Utils", "Mannheim.Utils\Mannheim.Utils.csproj", "{AAA0CE7D-4BBF-4E05-A51F-FC996242C46D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mannheim.Jobs", "Mannheim.Jobs\Mannheim.Jobs.csproj", "{9C77E5F5-D9F7-4768-A4B8-283D571DDA1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.Jobs", "Mannheim.Jobs\Mannheim.Jobs.csproj", "{9C77E5F5-D9F7-4768-A4B8-283D571DDA1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mannheim.Jobs.Test", "Mannheim.Jobs.Test\Mannheim.Jobs.Test.csproj", "{03A953F2-5186-4295-8098-7EE27B155C63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.Jobs.Test", "Mannheim.Jobs.Test\Mannheim.Jobs.Test.csproj", "{03A953F2-5186-4295-8098-7EE27B155C63}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.Storage", "Mannheim.Storage\Mannheim.Storage.csproj", "{8C9743DA-8330-4F48-95DA-C00BC24A11A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.Cli", "Mannheim.Cli\Mannheim.Cli.csproj", "{86E9B083-EC95-4139-AA65-C4F07D65F4FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,14 +33,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F5431FB2-1A53-4368-A6FF-4B99EC9C8385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5431FB2-1A53-4368-A6FF-4B99EC9C8385}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5431FB2-1A53-4368-A6FF-4B99EC9C8385}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5431FB2-1A53-4368-A6FF-4B99EC9C8385}.Release|Any CPU.Build.0 = Release|Any CPU
-		{21D1D785-107E-4F92-844B-6FFC84CAE635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21D1D785-107E-4F92-844B-6FFC84CAE635}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21D1D785-107E-4F92-844B-6FFC84CAE635}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21D1D785-107E-4F92-844B-6FFC84CAE635}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1F8CA6E0-7678-45E8-8E95-580D12471AA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F8CA6E0-7678-45E8-8E95-580D12471AA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F8CA6E0-7678-45E8-8E95-580D12471AA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -81,6 +73,14 @@ Global
 		{03A953F2-5186-4295-8098-7EE27B155C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03A953F2-5186-4295-8098-7EE27B155C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03A953F2-5186-4295-8098-7EE27B155C63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C9743DA-8330-4F48-95DA-C00BC24A11A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C9743DA-8330-4F48-95DA-C00BC24A11A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C9743DA-8330-4F48-95DA-C00BC24A11A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C9743DA-8330-4F48-95DA-C00BC24A11A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86E9B083-EC95-4139-AA65-C4F07D65F4FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86E9B083-EC95-4139-AA65-C4F07D65F4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86E9B083-EC95-4139-AA65-C4F07D65F4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86E9B083-EC95-4139-AA65-C4F07D65F4FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

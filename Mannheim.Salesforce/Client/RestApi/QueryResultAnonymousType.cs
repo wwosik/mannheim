@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Client.RestApi
 {
     public class QueryResultAnonymousType
     {
-        [JsonProperty("totalSize")]
+        [JsonPropertyName("totalSize")]
         public int TotalSize { get; set; }
 
-        [JsonProperty("done")]
+        [JsonPropertyName("done")]
         public bool IsDone { get; set; }
 
-        [JsonProperty("records")]
-        public List<JObject> Records { get; set; }
+        [JsonPropertyName("records")]
+        public List<object> Records { get; set; }
 
-        [JsonProperty("nextRecordsUrl")]
+        [JsonPropertyName("nextRecordsUrl")]
         public string NextRecordsUrl { get; set; }
 
         [JsonExtensionData]
-        public IDictionary<string, JToken> AdditionalData { get; set; }
+        public IDictionary<string, object> AdditionalData { get; set; }
     }
 }

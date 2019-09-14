@@ -2,45 +2,44 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Client.RestApi.Describes
 {
     public partial class DescribeObjectResult
     {
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string ApiName { get; set; }
 
-        [JsonProperty("label")]
+        [JsonPropertyName("label")]
         public string Label { get; set; }
 
-        [JsonProperty("labelPlural")]
+        [JsonPropertyName("labelPlural")]
         public string LabelPlural { get; set; }
 
-        [JsonProperty("queryable")]
+        [JsonPropertyName("queryable")]
         public bool Queryable { get; set; }
 
-        [JsonProperty("feedEnabled")]
+        [JsonPropertyName("feedEnabled")]
         public bool FeedEnabled { get; set; }
 
-        [JsonProperty("keyPrefix")]
+        [JsonPropertyName("keyPrefix")]
         public string KeyPrefix { get; set; }
 
-        [JsonProperty("custom")]
+        [JsonPropertyName("custom")]
         public bool Custom { get; set; }
 
-        [JsonProperty("fields")]
+        [JsonPropertyName("fields")]
         public List<FieldDescription> Fields { get; set; }
 
-        [JsonProperty("recordTypeInfos")]
+        [JsonPropertyName("recordTypeInfos")]
         public List<RecordTypeInfo> RecordTypeInfos { get; set; }
 
-        [JsonProperty("childRelationships")]
+        [JsonPropertyName("childRelationships")]
         public List<ChildRelationship> ChildRelationships { get; set; }
 
         [JsonExtensionData]
-        public IDictionary<string, JToken> AdditionalData { get; set; }
+        public IDictionary<string, object> AdditionalData { get; set; }
 
         public override string ToString() => $"{this.Label ?? "<NO LABEL>"} ({this.ApiName})";
     }

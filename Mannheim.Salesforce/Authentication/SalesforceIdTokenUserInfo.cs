@@ -1,27 +1,26 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Authentication
 {
     public class SalesforceIdTokenUserInfo
     {
-        [JsonProperty("at_hash")]
+        [JsonPropertyName("at_hash")]
         public string Hash { get; set; }
 
-        [JsonProperty("sub")]
+        [JsonPropertyName("sub")]
         public string Sub { get; set; }
 
-        [JsonProperty("preferred_username")]
+        [JsonPropertyName("preferred_username")]
         public string Username { get; set; }
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty("email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; }
 
         [JsonExtensionData]
-        public IDictionary<string, JToken> AdditionalData { get; set; }
+        public IDictionary<string, object> AdditionalData { get; set; }
     }
 }

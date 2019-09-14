@@ -1,188 +1,187 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Client.RestApi.Describes
 {
     public partial class FieldDescription
     {
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty("label")]
+        [JsonPropertyName("label")]
         public string Label { get; set; }
 
 
 
-        [JsonProperty("aggregatable")]
+        [JsonPropertyName("aggregatable")]
         public bool Aggregatable { get; set; }
 
-        [JsonProperty("aiPredictionField")]
+        [JsonPropertyName("aiPredictionField")]
         public bool AiPredictionField { get; set; }
 
-        [JsonProperty("autoNumber")]
+        [JsonPropertyName("autoNumber")]
         public bool AutoNumber { get; set; }
 
-        [JsonProperty("byteLength")]
+        [JsonPropertyName("byteLength")]
         public int ByteLength { get; set; }
 
-        [JsonProperty("calculated")]
+        [JsonPropertyName("calculated")]
         public bool Calculated { get; set; }
 
-        [JsonProperty("calculatedFormula")]
+        [JsonPropertyName("calculatedFormula")]
         public string CalculatedFormula { get; set; }
 
-        [JsonProperty("cascadeDelete")]
+        [JsonPropertyName("cascadeDelete")]
         public bool CascadeDelete { get; set; }
 
-        [JsonProperty("caseSensitive")]
+        [JsonPropertyName("caseSensitive")]
         public bool CaseSensitive { get; set; }
 
-        [JsonProperty("compoundFieldName")]
+        [JsonPropertyName("compoundFieldName")]
         public string CompoundFieldName { get; set; }
 
-        [JsonProperty("controllerName")]
+        [JsonPropertyName("controllerName")]
         public string ControllerName { get; set; }
 
-        [JsonProperty("createable")]
+        [JsonPropertyName("createable")]
         public bool Createable { get; set; }
 
-        [JsonProperty("custom")]
+        [JsonPropertyName("custom")]
         public bool Custom { get; set; }
 
-        [JsonProperty("defaultValue")]
+        [JsonPropertyName("defaultValue")]
         public string DefaultValue { get; set; }
 
-        [JsonProperty("defaultValueFormula")]
+        [JsonPropertyName("defaultValueFormula")]
         public string DefaultValueFormula { get; set; }
 
-        [JsonProperty("defaultedOnCreate")]
+        [JsonPropertyName("defaultedOnCreate")]
         public bool DefaultedOnCreate { get; set; }
 
-        [JsonProperty("dependentPicklist")]
+        [JsonPropertyName("dependentPicklist")]
         public bool DependentPicklist { get; set; }
 
-        [JsonProperty("deprecatedAndHidden")]
+        [JsonPropertyName("deprecatedAndHidden")]
         public bool DeprecatedAndHidden { get; set; }
 
-        [JsonProperty("digits")]
+        [JsonPropertyName("digits")]
         public int Digits { get; set; }
 
-        [JsonProperty("displayLocationInDecimal")]
+        [JsonPropertyName("displayLocationInDecimal")]
         public bool DisplayLocationInDecimal { get; set; }
 
-        [JsonProperty("encrypted")]
+        [JsonPropertyName("encrypted")]
         public bool Encrypted { get; set; }
 
-        [JsonProperty("externalId")]
+        [JsonPropertyName("externalId")]
         public bool ExternalId { get; set; }
 
-        [JsonProperty("extraTypeInfo")]
+        [JsonPropertyName("extraTypeInfo")]
         public string ExtraTypeInfo { get; set; }
 
-        [JsonProperty("filterable")]
+        [JsonPropertyName("filterable")]
         public bool Filterable { get; set; }
 
-        [JsonProperty("filteredLookupInfo")]
+        [JsonPropertyName("filteredLookupInfo")]
         public string FilteredLookupInfo { get; set; }
 
-        [JsonProperty("formulaTreatNullNumberAsZero")]
+        [JsonPropertyName("formulaTreatNullNumberAsZero")]
         public bool FormulaTreatNullNumberAsZero { get; set; }
 
-        [JsonProperty("groupable")]
+        [JsonPropertyName("groupable")]
         public bool Groupable { get; set; }
 
-        [JsonProperty("highScaleNumber")]
+        [JsonPropertyName("highScaleNumber")]
         public bool HighScaleNumber { get; set; }
 
-        [JsonProperty("htmlFormatted")]
+        [JsonPropertyName("htmlFormatted")]
         public bool HtmlFormatted { get; set; }
 
-        [JsonProperty("idLookup")]
+        [JsonPropertyName("idLookup")]
         public bool IdLookup { get; set; }
 
-        [JsonProperty("inlineHelpText")]
+        [JsonPropertyName("inlineHelpText")]
         public string InlineHelpText { get; set; }
 
-        [JsonProperty("length")]
+        [JsonPropertyName("length")]
         public int Length { get; set; }
 
-        [JsonProperty("mask")]
+        [JsonPropertyName("mask")]
         public string Mask { get; set; }
 
-        [JsonProperty("maskType")]
+        [JsonPropertyName("maskType")]
         public string MaskType { get; set; }
 
-        [JsonProperty("nameField")]
+        [JsonPropertyName("nameField")]
         public bool NameField { get; set; }
 
-        [JsonProperty("namePointing")]
+        [JsonPropertyName("namePointing")]
         public bool NamePointing { get; set; }
 
-        [JsonProperty("nillable")]
+        [JsonPropertyName("nillable")]
         public bool Nillable { get; set; }
 
-        [JsonProperty("permissionable")]
+        [JsonPropertyName("permissionable")]
         public bool Permissionable { get; set; }
 
-        [JsonProperty("picklistValues")]
+        [JsonPropertyName("picklistValues")]
         public object[] PicklistValues { get; set; }
 
-        [JsonProperty("polymorphicForeignKey")]
+        [JsonPropertyName("polymorphicForeignKey")]
         public bool PolymorphicForeignKey { get; set; }
 
-        [JsonProperty("precision")]
+        [JsonPropertyName("precision")]
         public int Precision { get; set; }
 
-        [JsonProperty("queryByDistance")]
+        [JsonPropertyName("queryByDistance")]
         public bool QueryByDistance { get; set; }
 
-        [JsonProperty("referenceTargetField")]
+        [JsonPropertyName("referenceTargetField")]
         public string ReferenceTargetField { get; set; }
 
-        [JsonProperty("referenceTo")]
+        [JsonPropertyName("referenceTo")]
         public string[] ReferenceTo { get; set; }
 
-        [JsonProperty("relationshipName")]
+        [JsonPropertyName("relationshipName")]
         public string RelationshipName { get; set; }
 
-        [JsonProperty("relationshipOrder")]
+        [JsonPropertyName("relationshipOrder")]
         public string RelationshipOrder { get; set; }
 
-        [JsonProperty("restrictedDelete")]
+        [JsonPropertyName("restrictedDelete")]
         public bool RestrictedDelete { get; set; }
 
-        [JsonProperty("restrictedPicklist")]
+        [JsonPropertyName("restrictedPicklist")]
         public bool RestrictedPicklist { get; set; }
 
-        [JsonProperty("scale")]
+        [JsonPropertyName("scale")]
         public int Scale { get; set; }
 
-        [JsonProperty("searchPrefilterable")]
+        [JsonPropertyName("searchPrefilterable")]
         public bool SearchPrefilterable { get; set; }
 
-        [JsonProperty("soapType")]
+        [JsonPropertyName("soapType")]
         public string SoapType { get; set; }
 
-        [JsonProperty("sortable")]
+        [JsonPropertyName("sortable")]
         public bool Sortable { get; set; }
 
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; }
 
-        [JsonProperty("unique")]
+        [JsonPropertyName("unique")]
         public bool Unique { get; set; }
 
-        [JsonProperty("updateable")]
+        [JsonPropertyName("updateable")]
         public bool Updateable { get; set; }
 
-        [JsonProperty("writeRequiresMasterRead")]
+        [JsonPropertyName("writeRequiresMasterRead")]
         public bool WriteRequiresMasterRead { get; set; }
 
 
         [JsonExtensionData]
-        public IDictionary<string, JToken> AdditionalData { get; set; }
+        public IDictionary<string, object> AdditionalData { get; set; }
     }
 }

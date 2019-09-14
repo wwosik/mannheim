@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Client.RestApi.Describes
 {
     public class DescribeSObjectsResult
     {
-        [JsonProperty("encoding")]
+        [JsonPropertyName("encoding")]
         public string Encoding { get; set; }
 
-        [JsonProperty("maxBatchSize")]
+        [JsonPropertyName("maxBatchSize")]
         public string MaxBatchSize { get; set; }
 
-        [JsonProperty("sobjects")]
+        [JsonPropertyName("sobjects")]
         public List<DescribeObjectResult> SObjects { get; set; }
 
         [JsonExtensionData]
-        public IDictionary<string, JToken> AdditionalData { get; set; }
+        public IDictionary<string, object> AdditionalData { get; set; }
 
         public override string ToString() => $"{this.SObjects?.Count ?? 0} objects";
     }

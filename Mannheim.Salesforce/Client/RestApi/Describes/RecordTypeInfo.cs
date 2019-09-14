@@ -1,22 +1,24 @@
-﻿using Newtonsoft.Json;
+﻿
+
+using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Client.RestApi.Describes
 {
     public class RecordTypeInfo
     {
-        [JsonProperty("master")]
+        [JsonPropertyName("master")]
         public bool Master { get; set; }
 
-        [JsonProperty("active")]
+        [JsonPropertyName("active")]
         public bool Active { get; set; }
 
-        [JsonProperty("developerName")]
+        [JsonPropertyName("developerName")]
         public string DeveloperName { get; set; }
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Label { get; set; }
 
-        [JsonProperty("recordTypeId")]
+        [JsonPropertyName("recordTypeId")]
         public string Id { get; set; }
     }
 }
