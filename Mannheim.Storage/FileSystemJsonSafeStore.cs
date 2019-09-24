@@ -13,17 +13,18 @@ namespace Mannheim.Storage
     public class FileSystemJsonSafeStore : IObjectStore
     {
         private readonly DirectoryInfo directory;
-        private readonly JsonSafeFileAccess writer;
+        private readonly JsonSafeFileAccess fileSystemAccess;
         private readonly ILogger<Storage.FileSystemJsonSafeStore> logger;
 
         public FileSystemJsonSafeStore(IOptions<FileSystemJsonSafeStoreOptions> options, ILogger<Storage.FileSystemJsonSafeStore> logger, IDataProtectionProvider dataProtectionProvider)
         {
             this.directory = options.Value.Directory;
-            this.writer = new JsonSafeFileAccess(dataProtectionProvider.CreateProtector(options.Value.ProtectionKey));
+            this.fileSystemAccess = new JsonSafeFileAccess(dataProtectionProvider.CreateProtector(options.Value.ProtectionKey));
             this.logger = logger;
         }
 
-        private string GetFilePath(string category, string key) => Path.Combine(directory.FullName, category, key + ".json");
+        private string GetFilePath(string category, string key)
+            => Path.Combine(directory.FullName, category, key + ".json.secured");
 
         public Task WriteAsync(string category, string key, object obj)
         {
@@ -31,7 +32,7 @@ namespace Mannheim.Storage
             {
                 this.logger.LogTrace($"Saving {category} {key}");
                 this.directory.CreateSubdirectory(category);
-                return this.writer.WriteAsync(GetFilePath(category, key), obj);
+                return this.fileSystemAccess.WriteAsync(GetFilePath(category, key), obj);
             }
             catch (Exception ex)
             {
@@ -45,7 +46,8 @@ namespace Mannheim.Storage
             try
             {
                 this.logger.LogTrace($"Reading {category} {key}");
-                return this.writer.ReadAsync<T>(GetFilePath(category, key));
+                var path = GetFilePath(category, key);
+                return this.fileSystemAccess.ReadAsync<T>(path);
             }
             catch (Exception ex)
             {
@@ -59,11 +61,11 @@ namespace Mannheim.Storage
             var directory = new DirectoryInfo(Path.Combine(this.directory.FullName, category));
             if (!directory.Exists) return Task.FromResult<ICollection<string>>(Array.Empty<string>());
 
-            var files = directory.EnumerateFiles(".json", new EnumerationOptions
+            var files = directory.EnumerateFiles("*.json.secured", new EnumerationOptions
             {
                 IgnoreInaccessible = true,
                 RecurseSubdirectories = false
-            }).Select(f => Path.GetFileNameWithoutExtension(f.Name))
+            }).Select(f => f.Name.Replace(".json.secured", ""))
             .ToArray();
 
             return Task.FromResult<ICollection<string>>(files);

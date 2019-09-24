@@ -33,7 +33,7 @@ namespace Mannheim.Storage
 
         public async Task<T> ReadAsync<T>(string path)
         {
-            if (!File.Exists(path)) return default(T);
+            if (!File.Exists(path)) return default;
 
             var protectedSerialized = await File.ReadAllTextAsync(path);
             var serialized = this.dataProtector.Unprotect(protectedSerialized);

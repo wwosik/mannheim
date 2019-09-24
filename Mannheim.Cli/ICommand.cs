@@ -7,6 +7,6 @@ namespace Mannheim.Cli
 {
     public interface ICommand
     {
-        Task Run();
+        Task RunAsync();
     }
 }

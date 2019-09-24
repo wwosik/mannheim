@@ -9,7 +9,12 @@ namespace Mannheim.Salesforce.Client.RestApi
 {
     public class SObject
     {
+        [JsonPropertyName("attributes")]
+        public Dictionary<string, object> Attributes { get; set; }
+
+        [JsonPropertyName("Id")]
         public string Id { get; set; }
+
 
         [JsonExtensionData]
         public IDictionary<string, object> AdditionalData { get; set; }
@@ -18,5 +23,5 @@ namespace Mannheim.Salesforce.Client.RestApi
         {
             return $"{this.GetType().Name} {this.Id} {this.AdditionalData.AsString()}";
         }
-    }
+    }    
 }

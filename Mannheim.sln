@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.Storage", "Mannhei
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mannheim.Cli", "Mannheim.Cli\Mannheim.Cli.csproj", "{86E9B083-EC95-4139-AA65-C4F07D65F4FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mannheim.ActiveDirectory", "Mannheim.ActiveDirectory\Mannheim.ActiveDirectory.csproj", "{066CB9F2-596D-450E-A13B-B98BA8541B96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{86E9B083-EC95-4139-AA65-C4F07D65F4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86E9B083-EC95-4139-AA65-C4F07D65F4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86E9B083-EC95-4139-AA65-C4F07D65F4FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{066CB9F2-596D-450E-A13B-B98BA8541B96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{066CB9F2-596D-450E-A13B-B98BA8541B96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{066CB9F2-596D-450E-A13B-B98BA8541B96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{066CB9F2-596D-450E-A13B-B98BA8541B96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

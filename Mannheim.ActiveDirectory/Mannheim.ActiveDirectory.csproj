@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RepositoryType>github</RepositoryType>
+    <PackageTags>https://github.com/wwosik/mannheim.git</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.DirectoryServices" Version="4.6.0-preview9.19421.4" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="4.6.0-preview9.19421.4" />
+  </ItemGroup>
+</Project>

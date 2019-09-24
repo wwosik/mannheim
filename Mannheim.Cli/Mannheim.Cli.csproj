@@ -11,18 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE" Link="LICENSE">
-      <PackagePath></PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Pack>True</Pack>
-    </None>
-    <None Include="LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview9.19423.4" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
       <PrivateAssets>all</PrivateAssets>
@@ -31,6 +19,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview9.19423.4" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0-preview9.19423.4" />
 
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mannheim.NLog.Utils\Mannheim.NLog.Utils.csproj" />
   </ItemGroup>
 
 </Project>

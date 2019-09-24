@@ -35,7 +35,7 @@ namespace Mannheim.Salesforce.ConnectionManagement
         public Task<SalesforceOAuthToken> GetTokenAsync(string name)
         {
             this.logger.LogTrace($"Getting SalesforceOAuthToken {name}");
-            return safeStore.ReadAsync<SalesforceOAuthToken>(this.options.SalesforceOAuthConfigurationCategoryName, name);
+            return safeStore.ReadAsync<SalesforceOAuthToken>(this.options.SalesforceOAuthTokenStoreCategoryName, name);
         }
 
         public async Task<SalesforceOAuthConfiguration> GetOAuthConfigurationAsync()
@@ -59,7 +59,12 @@ namespace Mannheim.Salesforce.ConnectionManagement
         public async Task<SalesforceAuthenticationClient> CreateAuthenticationClientAsync(Uri uri)
         {
             var oauthOptions = await GetOAuthConfigurationAsync();
-            return this.serviceProvider.Build<SalesforceAuthenticationClient>(options, uri);
+            return new SalesforceAuthenticationClient(
+                configuration: oauthOptions,
+                loginServerUri: uri,
+                httpClient: this.serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(),
+                logger: this.serviceProvider.GetRequiredService<ILogger<SalesforceAuthenticationClient>>()
+                );
         }
 
         public async Task<SalesforceClient> CreateClientAsync(string name, ApiVersion apiVersion = null)
@@ -76,7 +81,12 @@ namespace Mannheim.Salesforce.ConnectionManagement
             var newToken = await authClient.ExchangeRefreshTokenForTokenAsync(savedToken.RefreshToken);
             this.logger.LogDebug($"Authenticated {newToken.IdTokenUserInfo?.Name}...");
 
-            var salesforceClient = ActivatorUtilities.CreateInstance<SalesforceClient>(this.serviceProvider, newToken);
+
+            var salesforceClient = new SalesforceClient(
+                httpClient: this.serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(),
+                salesforceToken: newToken,
+                logger: this.serviceProvider.GetRequiredService<ILogger<SalesforceClient>>());
+
             if (apiVersion == null)
             {
                 this.logger.LogTrace("Establishing newest API version");

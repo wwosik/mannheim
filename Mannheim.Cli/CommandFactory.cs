@@ -10,13 +10,18 @@ namespace Mannheim.Cli
     {
         private readonly List<CommandInfo> availableCommands;
 
-        public CommandFactory(Assembly assembly)
+        public CommandFactory(Assembly assembly) : this(new[] { assembly })
         {
-            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
-            this.availableCommands = assembly.GetTypes()
+        }
+
+        public CommandFactory(IEnumerable<Assembly> assemblies)
+        {
+            if (assemblies == null) throw new ArgumentNullException(nameof(assemblies));
+            this.availableCommands = assemblies.Where(a => a != null).SelectMany(a => a.GetTypes())
                 .SelectMany(t => t.GetCustomAttributes(typeof(CommandAttribute), false).Cast<CommandAttribute>().Select(ca => new CommandInfo(t, ca)))
                 .ToList();
         }
+
         public string AvailableCommandsText => string.Join(", ", availableCommands.Select(c => c.Name).OrderBy(n => n));
 
         public CommandInfo FindCommand(string name)
