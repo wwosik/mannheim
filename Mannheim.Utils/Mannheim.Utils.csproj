@@ -9,12 +9,12 @@
     <Product>Mannheim utilities package</Product>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Copyright>Wojciech Wosik</Copyright>
-    <Version>2.0.0</Version>
-    <Description>Data store.</Description>
+    <Version>2.1.0</Version>
+    <Description>Mannheim utilities package</Description>
     <PackageTags></PackageTags>
     <RepositoryType>github</RepositoryType>
     <RepositoryUrl>https://github.com/wwosik/mannheim.git</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/wwosik/mannheim/blob/master/Mannheim.Storage/README.md</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/wwosik/mannheim/blob/master/Mannheim.Utils/README.md</PackageProjectUrl>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
   </PropertyGroup>
