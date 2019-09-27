@@ -52,7 +52,7 @@ namespace Mannheim.Salesforce.Client.RestApi.Describes
         public bool Custom { get; set; }
 
         [JsonPropertyName("defaultValue")]
-        public string DefaultValue { get; set; }
+        public object DefaultValue { get; set; }
 
         [JsonPropertyName("defaultValueFormula")]
         public string DefaultValueFormula { get; set; }
@@ -85,7 +85,7 @@ namespace Mannheim.Salesforce.Client.RestApi.Describes
         public bool Filterable { get; set; }
 
         [JsonPropertyName("filteredLookupInfo")]
-        public string FilteredLookupInfo { get; set; }
+        public object FilteredLookupInfo { get; set; }
 
         [JsonPropertyName("formulaTreatNullNumberAsZero")]
         public bool FormulaTreatNullNumberAsZero { get; set; }
@@ -127,7 +127,7 @@ namespace Mannheim.Salesforce.Client.RestApi.Describes
         public bool Permissionable { get; set; }
 
         [JsonPropertyName("picklistValues")]
-        public object[] PicklistValues { get; set; }
+        public List<PicklistValue> PicklistValues { get; set; }
 
         [JsonPropertyName("polymorphicForeignKey")]
         public bool PolymorphicForeignKey { get; set; }
@@ -148,7 +148,7 @@ namespace Mannheim.Salesforce.Client.RestApi.Describes
         public string RelationshipName { get; set; }
 
         [JsonPropertyName("relationshipOrder")]
-        public string RelationshipOrder { get; set; }
+        public int? RelationshipOrder { get; set; }
 
         [JsonPropertyName("restrictedDelete")]
         public bool RestrictedDelete { get; set; }
@@ -180,6 +180,18 @@ namespace Mannheim.Salesforce.Client.RestApi.Describes
         [JsonPropertyName("writeRequiresMasterRead")]
         public bool WriteRequiresMasterRead { get; set; }
 
+
+        [JsonExtensionData]
+        public IDictionary<string, object> AdditionalData { get; set; }
+    }
+
+    public class PicklistValue
+    {
+        public bool Active { get; set; }
+        public bool DefaultValue { get; set; }
+        public string Label { get; set; }
+        public string ValidFor { get; set; }
+        public string Value { get; set; }
 
         [JsonExtensionData]
         public IDictionary<string, object> AdditionalData { get; set; }

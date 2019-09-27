@@ -83,27 +83,7 @@ namespace Mannheim.Salesforce.Client
         private Uri GetDataUri(string resource)
         {
             return new Uri($"{this.ApiVersion.Url}{resource}", UriKind.Relative);
-        }
-
-        public async Task<List<T>> QueryAnonymousTypeAndContinueAsync<T>(string queryText, T anonymousObjectOfType)
-        {
-            this.logger.LogTrace("Querying...");
-            var result = new List<T>();
-            var queryResult = await this.HttpClient.GetJsonAsync<QueryResult<T>>(new Uri($"{this.ApiVersion.Url}/query?q={Uri.EscapeUriString(queryText)}", UriKind.Relative), this.JsonSerializerOptions);
-            this.logger.LogTrace($"Got {queryResult.Records.Count} of {queryResult.TotalSize}.");
-
-            result.AddRange(queryResult.Records);
-
-            while (queryResult.NextRecordsUrl != null)
-            {
-                this.logger.LogTrace("Getting next batch...");
-                queryResult = await this.QueryNextAsync<T>(new Uri(queryResult.NextRecordsUrl, UriKind.Relative));
-                result.AddRange(queryResult.Records);
-                this.logger.LogTrace($"Got {queryResult.Records?.Count} of {queryResult.TotalSize}.");
-            }
-
-            return result;
-        }
+        }  
 
         public async Task<QueryResult<T>> QueryAsync<T>(string queryText) where T : SObject
         {
@@ -123,7 +103,33 @@ namespace Mannheim.Salesforce.Client
             return result;
         }
 
+        private async Task<List<T>> QueryAndContinueAsync<T>(string queryText, Func<string, Task<QueryResult<T>>> initialQuery, Func<Uri, Task<QueryResult<T>>> nextQuery) where T : SObject
+        {
+            var queryResult = await initialQuery(queryText);
+            var result = new List<T>(queryResult.TotalSize);
+            result.AddRange(queryResult.Records);
+            while (queryResult.NextRecordsUrl != null)
+            {
+                this.logger.LogTrace("Getting next batch...");
+                queryResult = await nextQuery(new Uri(queryResult.NextRecordsUrl, UriKind.Relative));
+                result.AddRange(queryResult.Records);
+                this.logger.LogTrace($"Got {result.Count} of {queryResult.TotalSize}.");
+
+            }
+            return result;
+        }
+
+        public Task<List<T>> ToolingQueryAndContinueAsync<T>(string queryText) where T : SObject
+        {
+            return QueryAndContinueAsync<T>(queryText, this.ToolingQueryAsync<T>, this.ToolingQueryNextAsync<T>);
+        }
+
         public Task<QueryResult<T>> QueryNextAsync<T>(Uri nextRecordsUrl)
+        {
+            return this.HttpClient.GetJsonAsync<QueryResult<T>>(nextRecordsUrl);
+        }
+
+        public Task<QueryResult<T>> ToolingQueryNextAsync<T>(Uri nextRecordsUrl)
         {
             return this.HttpClient.GetJsonAsync<QueryResult<T>>(nextRecordsUrl);
         }
@@ -133,20 +139,10 @@ namespace Mannheim.Salesforce.Client
             return this.HttpClient.GetJsonAsync<List<ApiVersion>>(new Uri("/services/data", UriKind.Relative));
         }
 
-        public async Task<List<T>> QueryAndContinueAsync<T>(string queryText) where T : SObject
+        public Task<List<T>> QueryAndContinueAsync<T>(string queryText) where T : SObject
         {
-            var queryResult = await this.QueryAsync<T>(queryText);
-            var result = new List<T>(queryResult.TotalSize);
-            result.AddRange(queryResult.Records);
-            while (queryResult.NextRecordsUrl != null)
-            {
-                this.logger.LogTrace("Getting next batch...");
-                queryResult = await this.QueryNextAsync<T>(new Uri(queryResult.NextRecordsUrl, UriKind.Relative));
-                result.AddRange(queryResult.Records);
-                this.logger.LogTrace($"Got {result.Count} of {queryResult.TotalSize}.");
+            return QueryAndContinueAsync<T>(queryText, this.QueryAsync<T>, this.QueryNextAsync<T>);
 
-            }
-            return result;
         }
 
         /// <summary>

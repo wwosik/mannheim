@@ -14,5 +14,13 @@ namespace Mannheim.Cli
         }
 
         public string this[int index] => this.args.Length <= index ? "" : this.args[index];
+
+        public IEnumerable<string> AllFromIndex(int index)
+        {
+            for (var i = index; i < args.Length; i++)
+            {
+                yield return args[i];
+            }
+        }
     }
 }

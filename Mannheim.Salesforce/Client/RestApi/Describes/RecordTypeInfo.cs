@@ -1,5 +1,6 @@
 ﻿
 
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Client.RestApi.Describes
@@ -20,5 +21,8 @@ namespace Mannheim.Salesforce.Client.RestApi.Describes
 
         [JsonPropertyName("recordTypeId")]
         public string Id { get; set; }
+
+        [JsonExtensionData]
+        public IDictionary<string, object> AdditionalData { get; set; }
     }
 }

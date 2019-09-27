@@ -10,6 +10,8 @@ namespace Mannheim.Salesforce.Client.RestApi.Describes
     {
         public SObjectFieldsSet GetFieldSet() => new SObjectFieldsSet(this.Fields?.Select(f => f.Name));
 
+        public string LabelOrApiName => string.IsNullOrEmpty(this.Label) ? "[" + this.ApiName + "]" : this.Label;
+
         public bool IsSystemObject => SystemObjectNames.Contains(this.ApiName);
 
         public static HashSet<string> SystemObjectNames = new HashSet<string>{

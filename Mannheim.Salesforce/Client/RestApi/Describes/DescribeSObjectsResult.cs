@@ -11,7 +11,7 @@ namespace Mannheim.Salesforce.Client.RestApi.Describes
         public string Encoding { get; set; }
 
         [JsonPropertyName("maxBatchSize")]
-        public string MaxBatchSize { get; set; }
+        public decimal? MaxBatchSize { get; set; }
 
         [JsonPropertyName("sobjects")]
         public List<DescribeObjectResult> SObjects { get; set; }

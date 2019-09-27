@@ -33,8 +33,8 @@ namespace Mannheim.Salesforce.Client.RestApi.Describes
                     case "picklist":
                     case "multipicklist":
                         description = (this.RestrictedPicklist ? "Restricted " : "")
-                            + this.Type
-                            + (this.DependentPicklist ? " Dependent on " + this.ControllerName : "");
+                            + char.ToUpperInvariant(this.Type[0]) + this.Type[1..]
+                            + (this.DependentPicklist ? " dependent on " + this.ControllerName : "");
                         break;
                     default:
                         break;
@@ -50,6 +50,6 @@ namespace Mannheim.Salesforce.Client.RestApi.Describes
 
         public bool IsSystemField => SystemFieldNames.Contains(this.Name);
 
-        public bool IsRequired => this.Nillable && !this.AutoNumber && this.Type != "boolean";
+        public bool IsRequired => !this.Nillable && !this.AutoNumber && !this.Type.Equals("boolean", StringComparison.InvariantCultureIgnoreCase);
     }
 }
