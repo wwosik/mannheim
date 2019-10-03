@@ -7,8 +7,8 @@
     <RepositoryUrl>https://github.com/wwosik/mannheim.git</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.1.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +24,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mannheim.NLog.Utils\Mannheim.NLog.Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
