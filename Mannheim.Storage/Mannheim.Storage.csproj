@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>wwosik</Authors>
     <Company>Wojciech Wosik</Company>
@@ -9,19 +9,20 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
 
     <Copyright>Wojciech Wosik</Copyright>
-    <Version>2.1.0</Version>
+    <Version>3.0.0</Version>
     <Description>Data store.</Description>
     <PackageTags></PackageTags>
     <RepositoryType>github</RepositoryType>
     <RepositoryUrl>https://github.com/wwosik/mannheim.git</RepositoryUrl>
     <PackageProjectUrl>https://github.com/wwosik/mannheim/blob/master/Mannheim.Storage/README.md</PackageProjectUrl>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -47,10 +47,11 @@ namespace Mannheim.Storage
             }
         }
 
-        private async Task<IEnumerable<string>> ReadAsync(string category)
+        private Task<IEnumerable<string>> ReadAsync(string category)
         {
-            var lines = await File.ReadAllLinesAsync(GetFile(category));
-            return lines.Where(l => l.Length > 0).Select(l => l.Replace("\\n", "\n", StringComparison.InvariantCulture).Replace("\\r", "\r", StringComparison.InvariantCulture));
+            var lines = File.ReadAllLines(GetFile(category));
+            var linesUpdated = lines.Where(l => l.Length > 0).Select(l => l.Replace("\\n", "\n").Replace("\\r", "\r"));
+            return Task.FromResult(linesUpdated);
         }
 
         private string GetFile(string category)
@@ -60,7 +61,8 @@ namespace Mannheim.Storage
 
         private Task SaveAsync(string category, IEnumerable<string> items)
         {
-            return File.WriteAllLinesAsync(GetFile(category), items.Select(i => i.Replace("\n", "\\n", StringComparison.InvariantCulture).Replace("\r", "\\r", StringComparison.InvariantCulture)));
+            File.WriteAllLines(GetFile(category), items.Select(i => i.Replace("\n", "\\n").Replace("\r", "\\r")));
+            return Task.CompletedTask;
         }
     }
 

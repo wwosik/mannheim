@@ -68,16 +68,18 @@ namespace Mannheim.Storage
             }
         }
 
-        public Task<ICollection<string>> EnumerateCategoryAsync(string category)
+        public Task<ICollection<string>> EnumerateKeysInCategoryAsync(string category)
         {
             var directory = new DirectoryInfo(Path.Combine(this.directory.FullName, category));
             if (!directory.Exists) return Task.FromResult<ICollection<string>>(Array.Empty<string>());
 
-            var files = directory.EnumerateFiles("*.json", new EnumerationOptions
-            {
-                IgnoreInaccessible = true,
-                RecurseSubdirectories = false
-            }).Select(f => f.Name.Replace(".json", ""))
+            var files = directory.EnumerateFiles("*.json", SearchOption.TopDirectoryOnly)
+            //    new EnumerationOptions
+            //{
+            //    IgnoreInaccessible = true,
+            //    RecurseSubdirectories = false
+            //})
+            .Select(f => f.Name.Replace(".json", ""))
             .ToArray();
 
             return Task.FromResult<ICollection<string>>(files);
@@ -86,15 +88,34 @@ namespace Mannheim.Storage
         private Task WriteAsync(string path, object obj)
         {
             var serialized = JsonSerializer.Serialize(obj, DefaultOptions);
-            return File.WriteAllTextAsync(path, serialized);
+            File.WriteAllText(path, serialized);
+            return Task.CompletedTask;
         }
 
-        private async Task<T> ReadAsync<T>(string path)
+        private Task<T> ReadAsync<T>(string path)
         {
             if (!File.Exists(path)) return default;
 
-            var serialized = await File.ReadAllTextAsync(path);
-            return JsonSerializer.Deserialize<T>(serialized, DefaultOptions);
+            var serialized = File.ReadAllText(path);
+            return Task.FromResult(JsonSerializer.Deserialize<T>(serialized, DefaultOptions));
         }
+
+        public Task<ICollection<(string, T)>> EnumerateCategoryAsync<T>(string category)
+        {
+            var directory = new DirectoryInfo(Path.Combine(this.directory.FullName, category));
+            if (!directory.Exists) return Task.FromResult<ICollection<(string, T)>>(Array.Empty<(string, T)>());
+
+            var files = directory.EnumerateFiles("*.json", SearchOption.TopDirectoryOnly)
+            //    new EnumerationOptions
+            //{
+            //    IgnoreInaccessible = true,
+            //    RecurseSubdirectories = false
+            //})
+            .Select(f => (f.FullName.Replace(".json", ""), JsonSerializer.Deserialize<T>(File.ReadAllText(f.FullName), DefaultOptions)))
+            .ToArray();
+
+            return Task.FromResult<ICollection<(string, T)>>(files);
+        }
+
     }
 }

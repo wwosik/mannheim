@@ -56,19 +56,36 @@ namespace Mannheim.Storage
             }
         }
 
-        public Task<ICollection<string>> EnumerateCategoryAsync(string category)
+        public Task<ICollection<string>> EnumerateKeysInCategoryAsync(string category)
         {
             var directory = new DirectoryInfo(Path.Combine(this.directory.FullName, category));
             if (!directory.Exists) return Task.FromResult<ICollection<string>>(Array.Empty<string>());
 
-            var files = directory.EnumerateFiles("*.json.secured", new EnumerationOptions
-            {
-                IgnoreInaccessible = true,
-                RecurseSubdirectories = false
-            }).Select(f => f.Name.Replace(".json.secured", ""))
+            var files = directory.EnumerateFiles("*.json.secured", SearchOption.TopDirectoryOnly)
+            //{
+            //    IgnoreInaccessible = true,
+            //    RecurseSubdirectories = false
+            //})
+            .Select(f => f.Name.Replace(".json.secured", ""))
             .ToArray();
 
             return Task.FromResult<ICollection<string>>(files);
+        }
+
+        public Task<ICollection<(string, T)>> EnumerateCategoryAsync<T>(string category)
+        {
+            var directory = new DirectoryInfo(Path.Combine(this.directory.FullName, category));
+            if (!directory.Exists) return Task.FromResult<ICollection<(string, T)>>(Array.Empty<(string, T)>());
+
+            var items = directory.EnumerateFiles("*.json.secured", SearchOption.TopDirectoryOnly)
+            //{
+            //    IgnoreInaccessible = true,
+            //    RecurseSubdirectories = false
+            //})
+            .Select(f => (f.Name.Replace(".json.secured", ""), this.fileSystemAccess.ReadAsync<T>(f.FullName).Result))
+            .ToArray();
+
+            return Task.FromResult<ICollection<(string, T)>>(items);
         }
     }
 }

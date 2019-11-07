@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Client.RestApi.Describes
 {
-    public partial class FieldDescription
+    public class FieldDescription
     {
         [JsonPropertyName("name")]
         public string Name { get; set; }

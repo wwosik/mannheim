@@ -9,6 +9,7 @@ namespace Mannheim.Storage
     {
         Task WriteAsync(string category, string key, object obj);
         Task<T> ReadAsync<T>(string category, string key);
-        Task<ICollection<string>> EnumerateCategoryAsync(string category);
+        Task<ICollection<string>> EnumerateKeysInCategoryAsync(string category);
+        Task<ICollection<(string, T)>> EnumerateCategoryAsync<T>(string category);
     }
 }

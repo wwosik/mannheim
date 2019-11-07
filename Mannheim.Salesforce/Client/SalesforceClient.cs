@@ -44,15 +44,27 @@ namespace Mannheim.Salesforce.Client
         public async Task UpdateAsync(string id, string objectType, object newVersion)
         {
             this.logger.LogTrace($"Updating {objectType} {id}");
-            using var patchContent = new StringContent(JsonSerializer.Serialize(newVersion));
-            patchContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var response = await this.HttpClient.PatchAsync(GetDataUri($"/sobjects/{objectType}/{id}"), patchContent);
-
-            if (!response.IsSuccessStatusCode)
+            using (var patchContent = new StringContent(JsonSerializer.Serialize(newVersion)))
             {
-                var content = await response.Content.ReadAsStringAsync();
-                throw new SalesforceException($"Failed request with code {response.StatusCode} {response.ReasonPhrase}: {content}");
+                patchContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var response = await this.PatchAsync(GetDataUri($"/sobjects/{objectType}/{id}"), patchContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new SalesforceException($"Failed request with code {response.StatusCode} {response.ReasonPhrase}: {content}");
+                }
             }
+        }
+
+        private Task<HttpResponseMessage> PatchAsync(Uri uri, HttpContent content)
+        {
+            return this.HttpClient.SendAsync(new HttpRequestMessage
+            {
+                Content = content,
+                RequestUri = uri,                
+                Method = new HttpMethod("PATCH"),
+            });
         }
 
         public async Task<IList<UpdateResult>> MassUpdateAsync(IEnumerable<object> objects, bool allOrNone = false)
@@ -66,24 +78,26 @@ namespace Mannheim.Salesforce.Client
             };
 
             string serializedPayload = JsonSerializer.Serialize(payload);
-            using var patchContent = new StringContent(serializedPayload);
-            patchContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var uri = GetDataUri($"/composite/sobjects");
-            var response = await this.HttpClient.PatchAsync(uri, patchContent);
-
-            var content = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
+            using (var patchContent = new StringContent(serializedPayload))
             {
-                throw new SalesforceException($"Failed request with code {response.StatusCode} {response.ReasonPhrase}: {content}");
-            }
+                patchContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var uri = GetDataUri($"/composite/sobjects");
+                var response = await this.PatchAsync(uri, patchContent);
 
-            return JsonSerializer.Deserialize<List<UpdateResult>>(content, this.JsonSerializerOptions);
+                var content = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new SalesforceException($"Failed request with code {response.StatusCode} {response.ReasonPhrase}: {content}");
+                }
+
+                return JsonSerializer.Deserialize<List<UpdateResult>>(content, this.JsonSerializerOptions);
+            }
         }
 
         private Uri GetDataUri(string resource)
         {
             return new Uri($"{this.ApiVersion.Url}{resource}", UriKind.Relative);
-        }  
+        }
 
         public async Task<QueryResult<T>> QueryAsync<T>(string queryText) where T : SObject
         {
@@ -188,22 +202,24 @@ namespace Mannheim.Salesforce.Client
                 RequestUri = new Uri($"/services/apexrest{uri}", UriKind.Relative)
             };
 
-            using StringContent payloadContent = payloadToJsonSerialize == null ? null : new StringContent(JsonSerializer.Serialize(payloadToJsonSerialize));
-
-            if (payloadContent != null)
+            using (StringContent payloadContent = payloadToJsonSerialize == null ? null : new StringContent(JsonSerializer.Serialize(payloadToJsonSerialize)))
             {
-                request.Content = payloadContent;
-                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            }
 
-            var result = await this.HttpClient.SendAsync(request);
-            var content = await result.Content.ReadAsStringAsync();
-            if (!result.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed request with code {result.StatusCode} {result.ReasonPhrase}: {content}");
-            }
+                if (payloadContent != null)
+                {
+                    request.Content = payloadContent;
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                }
 
-            return content;
+                var result = await this.HttpClient.SendAsync(request);
+                var content = await result.Content.ReadAsStringAsync();
+                if (!result.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Failed request with code {result.StatusCode} {result.ReasonPhrase}: {content}");
+                }
+
+                return content;
+            }
         }
 
         public JsonSerializerOptions JsonSerializerOptions { get; } = new JsonSerializerOptions

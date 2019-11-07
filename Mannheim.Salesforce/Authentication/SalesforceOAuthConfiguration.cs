@@ -39,8 +39,10 @@ namespace Mannheim.Salesforce.Authentication
                 payload.Add("state", state);
             }
 
-            using var form = new FormUrlEncodedContent(payload);
-            return new Uri($"{serverUrl}/services/oauth2/authorize?" + form.ReadAsStringAsync().Result);
+            using (var form = new FormUrlEncodedContent(payload))
+            {
+                return new Uri($"{serverUrl}/services/oauth2/authorize?" + form.ReadAsStringAsync().Result);
+            }
         }
     }
 }

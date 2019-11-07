@@ -24,20 +24,21 @@ namespace Mannheim.Storage
             this.options = options ?? DefaultOptions;
         }
 
-        public async Task WriteAsync(string path, object obj)
+        public Task WriteAsync(string path, object obj)
         {
             var serialized = JsonSerializer.Serialize(obj, this.options);
             var protectedSerialized = this.dataProtector.Protect(serialized);
-            await File.WriteAllTextAsync(path, protectedSerialized);
+            File.WriteAllText(path, protectedSerialized);
+            return Task.CompletedTask;
         }
 
-        public async Task<T> ReadAsync<T>(string path)
+        public Task<T> ReadAsync<T>(string path)
         {
-            if (!File.Exists(path)) return default;
+            if (!File.Exists(path)) return Task.FromResult(default(T));
 
-            var protectedSerialized = await File.ReadAllTextAsync(path);
+            var protectedSerialized = File.ReadAllText(path);
             var serialized = this.dataProtector.Unprotect(protectedSerialized);
-            return JsonSerializer.Deserialize<T>(serialized, this.options);
+            return Task.FromResult(JsonSerializer.Deserialize<T>(serialized, this.options));
         }
     }
 }

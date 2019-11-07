@@ -15,8 +15,6 @@ using System.Threading.Tasks;
 
 namespace Mannheim.Salesforce.ConnectionManagement
 {
-
-
     public class SalesforceClientFactory : ISalesforceClientFactory
     {
         private readonly ILogger<SalesforceClientFactory> logger;
@@ -27,7 +25,7 @@ namespace Mannheim.Salesforce.ConnectionManagement
         public SalesforceClientFactory(ILogger<SalesforceClientFactory> logger, IObjectStore safeStore, IServiceProvider serviceProvider, IOptions<SalesforceClientFactoryOptions> options)
         {
             this.logger = logger;
-            this.safeStore = safeStore;
+            this.safeStore = safeStore ?? throw new ArgumentNullException("safeStore");
             this.serviceProvider = serviceProvider;
             this.options = options?.Value ?? new SalesforceClientFactoryOptions();
         }
@@ -38,16 +36,17 @@ namespace Mannheim.Salesforce.ConnectionManagement
             return safeStore.ReadAsync<SalesforceOAuthToken>(this.options.SalesforceOAuthTokenStoreCategoryName, name);
         }
 
-        public async Task<SalesforceOAuthConfiguration> GetOAuthConfigurationAsync()
+        public async Task<SalesforceOAuthConfiguration> GetOAuthConfigurationAsync(string oauthConfigName = "__default")
         {
-            var configuration = await this.safeStore.ReadAsync<SalesforceOAuthConfiguration>(this.options.SalesforceOAuthConfigurationCategoryName, this.options.SalesforceOAuthConfigurationKey);
+            var task = this.safeStore.ReadAsync<SalesforceOAuthConfiguration>(this.options.SalesforceOAuthConfigurationCategoryName, oauthConfigName);
+            var configuration = await task;
             if (configuration == null) throw new InvalidOperationException("Salesforce Oauth not configured!");
             return configuration;
         }
 
-        public async Task SaveOAuthConfigurationAsync(SalesforceOAuthConfiguration configuration)
+        public async Task SaveOAuthConfigurationAsync(SalesforceOAuthConfiguration configuration, string oauthConfigName = "__default")
         {
-            await this.safeStore.WriteAsync(this.options.SalesforceOAuthConfigurationCategoryName, this.options.SalesforceOAuthConfigurationKey, configuration);
+            await this.safeStore.WriteAsync(this.options.SalesforceOAuthConfigurationCategoryName, oauthConfigName, configuration);
         }
 
         public async Task<Uri> GetWebFlowUriAsync(Uri loginSystemUri, string state = null)
@@ -56,9 +55,9 @@ namespace Mannheim.Salesforce.ConnectionManagement
             return oauthConfig.GetAuthenticationUrl(loginSystemUri, state);
         }
 
-        public async Task<SalesforceAuthenticationClient> CreateAuthenticationClientAsync(Uri uri)
+        public async Task<SalesforceAuthenticationClient> CreateAuthenticationClientAsync(Uri uri, string oauthConfigName = "__default")
         {
-            var oauthOptions = await GetOAuthConfigurationAsync();
+            var oauthOptions = await GetOAuthConfigurationAsync(oauthConfigName);
             return new SalesforceAuthenticationClient(
                 configuration: oauthOptions,
                 loginServerUri: uri,
@@ -67,7 +66,7 @@ namespace Mannheim.Salesforce.ConnectionManagement
                 );
         }
 
-        public async Task<SalesforceClient> CreateClientAsync(string name, ApiVersion apiVersion = null)
+        public async Task<SalesforceClient> CreateClientAsync(string name, ApiVersion apiVersion = null, string oauthConfigName = "__default")
         {
             var savedToken = await this.GetTokenAsync(name);
             if (savedToken == null)
@@ -75,26 +74,28 @@ namespace Mannheim.Salesforce.ConnectionManagement
                 throw new KeyNotFoundException($"Connection {name} unknown");
             }
 
-            using var authClient = await CreateAuthenticationClientAsync(new Uri(savedToken.InstanceUrl, UriKind.Absolute));
-
-            this.logger.LogDebug($"Authenticating {name}...");
-            var newToken = await authClient.ExchangeRefreshTokenForTokenAsync(savedToken.RefreshToken);
-            this.logger.LogDebug($"Authenticated {newToken.IdTokenUserInfo?.Name}...");
-
-
-            var salesforceClient = new SalesforceClient(
-                httpClient: this.serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(),
-                salesforceToken: newToken,
-                logger: this.serviceProvider.GetRequiredService<ILogger<SalesforceClient>>());
-
-            if (apiVersion == null)
+            using (var authClient = await CreateAuthenticationClientAsync(new Uri(savedToken.InstanceUrl, UriKind.Absolute), oauthConfigName))
             {
-                this.logger.LogTrace("Establishing newest API version");
-                await salesforceClient.SetToUseNewestApiVersionAsync();
-                this.logger.LogTrace($"API version: {salesforceClient.ApiVersion}");
-            }
 
-            return salesforceClient;
+                this.logger.LogDebug($"Authenticating {name}...");
+                var newToken = await authClient.ExchangeRefreshTokenForTokenAsync(savedToken.RefreshToken);
+                this.logger.LogDebug($"Authenticated {newToken.IdTokenUserInfo?.Name}...");
+
+
+                var salesforceClient = new SalesforceClient(
+                    httpClient: this.serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(),
+                    salesforceToken: newToken,
+                    logger: this.serviceProvider.GetRequiredService<ILogger<SalesforceClient>>());
+
+                if (apiVersion == null)
+                {
+                    this.logger.LogTrace("Establishing newest API version");
+                    await salesforceClient.SetToUseNewestApiVersionAsync();
+                    this.logger.LogTrace($"API version: {salesforceClient.ApiVersion}");
+                }
+
+                return salesforceClient;
+            }
         }
 
         public Task SaveTokenAsync(string name, SalesforceOAuthToken token)
@@ -102,9 +103,9 @@ namespace Mannheim.Salesforce.ConnectionManagement
             return this.safeStore.WriteAsync(this.options.SalesforceOAuthTokenStoreCategoryName, name, token);
         }
 
-        public Task<ICollection<string>> EnumerateAsync()
+        public Task<ICollection<(string, SalesforceOAuthToken)>> EnumerateTokensAsync()
         {
-            return this.safeStore.EnumerateCategoryAsync(this.options.SalesforceOAuthTokenStoreCategoryName);
+            return this.safeStore.EnumerateCategoryAsync<SalesforceOAuthToken>(this.options.SalesforceOAuthTokenStoreCategoryName);
         }
     }
 }

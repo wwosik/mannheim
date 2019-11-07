@@ -11,15 +11,17 @@ namespace System.Net.Http
     {
         public static async Task<TResult> PostFormAndReceiveJsonAsync<TResult>(this HttpClient httpClient, Uri url, IDictionary<string, string> payload, JsonSerializerOptions jsonSerializerOptions = null)
         {
-            using var encodedPayload = new FormUrlEncodedContent(payload);
-            var result = await httpClient.PostAsync(url, encodedPayload).ConfigureAwait(false);
-            var content = await result.Content.ReadAsStringAsync();
-            if (!result.IsSuccessStatusCode)
+            using (var encodedPayload = new FormUrlEncodedContent(payload))
             {
-                throw new Exception($"Failed request with code {result.StatusCode} {result.ReasonPhrase}: {content}");
-            }
+                var result = await httpClient.PostAsync(url, encodedPayload).ConfigureAwait(false);
+                var content = await result.Content.ReadAsStringAsync();
+                if (!result.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Failed request with code {result.StatusCode} {result.ReasonPhrase}: {content}");
+                }
 
-            return JsonSerializer.Deserialize<TResult>(content, jsonSerializerOptions);
+                return JsonSerializer.Deserialize<TResult>(content, jsonSerializerOptions);
+            }
         }
 
         public static async Task<TResult> GetJsonAsync<TResult>(this HttpClient httpClient, Uri url, JsonSerializerOptions jsonSerializerOptions = null)

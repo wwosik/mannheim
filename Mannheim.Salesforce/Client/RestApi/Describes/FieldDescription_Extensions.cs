@@ -5,51 +5,56 @@ using System.Text.Json.Serialization;
 
 namespace Mannheim.Salesforce.Client.RestApi.Describes
 {
-    public partial class FieldDescription
+    public static class FieldDescriptionExtensions
     {
-        [JsonIgnore]
-        public string CorrectedLabel => !string.IsNullOrWhiteSpace(this.Label) ? this.Label : "[" + this.Name + "]";
-
-        [JsonIgnore]
-        public string Category => this.Custom ? "Custom" : "Standard";
-
-        [JsonIgnore]
-
-        public string TypeDescription
+        public static string GetCorrectedLabel(this FieldDescription fieldDescription)
         {
-            get
-            {
-                var description = this.Type.Substring(0, 1).ToUpper() + this.Type.Substring(1);
-                switch (this.Type)
-                {
-                    case "phone":
-                    case "email":
-                    case "string":
-                    case "encryptedstring":
-                    case "url":
-                    case "textarea":
-                        description += " " + this.Length;
-                        break;
-                    case "picklist":
-                    case "multipicklist":
-                        description = (this.RestrictedPicklist ? "Restricted " : "")
-                            + char.ToUpperInvariant(this.Type[0]) + this.Type[1..]
-                            + (this.DependentPicklist ? " dependent on " + this.ControllerName : "");
-                        break;
-                    default:
-                        break;
-                }
+            return !string.IsNullOrWhiteSpace(fieldDescription.Label) ? fieldDescription.Label : "[" + fieldDescription.Name + "]";
+        }
 
-                return description;
+        public static string GetCategory(this FieldDescription fieldDescription)
+        {
+            return fieldDescription.Custom ? "Custom" : "Standard";
+        }
+
+        public static string GetTypeDescription(this FieldDescription fieldDescription)
+        {
+            var description = fieldDescription.Type.Substring(0, 1).ToUpper() + fieldDescription.Type.Substring(1);
+            switch (fieldDescription.Type)
+            {
+                case "phone":
+                case "email":
+                case "string":
+                case "encryptedstring":
+                case "url":
+                case "textarea":
+                    description += " " + fieldDescription.Length;
+                    break;
+                case "picklist":
+                case "multipicklist":
+                    description = (fieldDescription.RestrictedPicklist ? "Restricted " : "")
+                        + char.ToUpperInvariant(fieldDescription.Type[0]) + fieldDescription.Type.Substring(1)
+                        + (fieldDescription.DependentPicklist ? " dependent on " + fieldDescription.ControllerName : "");
+                    break;
+                default:
+                    break;
             }
+
+            return description;
         }
 
         public static HashSet<string> SystemFieldNames = new HashSet<string>{ "Id", "LastModifiedById", "CreatedById", "LastReferencedById",
             "IsDeleted", "CurrencyIsoCode","SystemModstamp","LastModifiedDate", "CreatedDate",
             "OwnerId", "RecordTypeId" };
 
-        public bool IsSystemField => SystemFieldNames.Contains(this.Name);
+        public static bool GetIsSystemField(this FieldDescription fieldDescription)
+        {
+            return SystemFieldNames.Contains(fieldDescription.Name);
+        }
 
-        public bool IsRequired => !this.Nillable && !this.AutoNumber && !this.Type.Equals("boolean", StringComparison.InvariantCultureIgnoreCase);
+        public static bool GetIsRequired(this FieldDescription fieldDescription)
+        {
+            return !fieldDescription.Nillable && !fieldDescription.AutoNumber && !fieldDescription.Type.Equals("boolean", StringComparison.InvariantCultureIgnoreCase);
+        }
     }
 }
