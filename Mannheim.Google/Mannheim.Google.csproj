@@ -3,17 +3,20 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>3.0.3</Version>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Authors>wwosik</Authors>
+    <Product>Mannheim Google access package</Product>
+    <Description>Accessing Google. Part of Mannheim library suite</Description>
+    <RepositoryType>github</RepositoryType>
+    <PackageTags>google</PackageTags>
+    <RepositoryUrl>https://github.com/wwosik/mannheim.git</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE" Link="LICENSE">
-      <PackagePath></PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Pack>True</Pack>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.42.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.42.0" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.42.0.1750" />
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.42.0.1769" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.7">
@@ -29,6 +32,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mannheim.Storage\Mannheim.Storage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

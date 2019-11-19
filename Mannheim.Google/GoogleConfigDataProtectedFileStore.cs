@@ -38,5 +38,35 @@ namespace Mannheim.Google
         {
             return this.fileStore.WriteAsync("token", name, value);
         }
+
+        public Task<T> ReadAsync<T>(string name)
+        {
+            return this.fileStore.ReadAsync<T>("misc", name);
+        }
+
+        public Task WriteAsync<T>(string name, T content)
+        {
+            return this.fileStore.WriteAsync("misc", name, content);
+        }
+
+        public Task StoreAsync<T>(string key, T value)
+        {
+            return this.fileStore.WriteAsync("google", key, value);
+        }
+
+        public Task DeleteAsync<T>(string key)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task<T> GetAsync<T>(string key)
+        {
+            return this.fileStore.ReadAsync<T>("google", key);
+        }
+
+        public Task ClearAsync()
+        {
+            return Task.CompletedTask;
+        }
     }
 }
