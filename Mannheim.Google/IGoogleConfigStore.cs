@@ -7,10 +7,10 @@ using Google.Apis.Util.Store;
 
 namespace Mannheim.Google
 {
-    public interface IGoogleConfigStore : IDataStore
+    public interface IGoogleConfigStore
     {
-        Task<GoogleOAuthConfig> GetGoogleOAuthConfigAsync();
-        Task SaveGoogleOAuthConfigAsync(GoogleOAuthConfig value);
+        Task<GoogleOAuthConfig> GetGoogleOAuthConfigAsync(string name = "default");
+        Task SaveGoogleOAuthConfigAsync(GoogleOAuthConfig value, string name = "default");
         Task<TokenResponse> GetGoogleTokenAsync(string name = "__default_token");
         Task SaveGoogleTokenAsync(TokenResponse value, string name = "__default_token");
     }
